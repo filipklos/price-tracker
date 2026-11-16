@@ -5,6 +5,9 @@
 \usepackage[english]{babel}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array}
+\usepackage{ragged2e}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
 \usepackage{xcolor}
 \usepackage{hyperref}
 
@@ -37,8 +40,8 @@
 
 % EDIT THE FIELDS BELOW.
 \title[Azure AI -- Module 1]{Microsoft Azure AI -- Module 1}
-\subtitle{Microsoft Azure -- Practical Approach \\ Presentation topic / project title}
-\author[Student / team]{Student name(s) / Team name}
+\subtitle{Microsoft Azure -- Practical Approach \\ Azure Virtual Machines as an IaaS solution}
+\author[Student / team]{Filip Kłos, Szymon Kaczmarek, Krzysztof Szczepaniak, Jakub Rybczyński, Dorian Koehler}
 \institute[SUT]{Faculty of Applied Mathematics\\Silesian University of Technology}
 \date{\today}
 
@@ -52,29 +55,162 @@
 \section{Introduction}
 \begin{frame}{Selected Azure topic and objectives}
 \begin{itemize}
-\item Identify the chosen Microsoft Azure topic and explain why it matters.
-\item Describe the intended use case and presentation scope.
-\item State what will be explored and presented.
-\item Explain the structure of the demonstration.
+\item \textbf{Selected topic:} Azure Virtual Machines (IaaS)
+\item \textbf{Problem context:} A team needs a Linux environment where it can install custom runtimes, configure the OS, and run software that is not easily packaged for a PaaS platform.
+\item \textbf{Why Azure VMs:} They provide the highest degree of control over the VM and its operating system compared with other Azure compute options
+\item \textbf{What will be presented:} VM concepts, portal configuration choices, a practical deployment/inspection, observed results, and cost/security trade-offs.
+\item \textbf{Note:} Azure VMs free you from buying physical hardware, but they do not free you from OS maintenance, patching and software installation remain your responsibility.
 \end{itemize}
 \end{frame}
 \section{Cloud concepts}
 \begin{frame}{Cloud foundations and terminology}
-\begin{itemize}
-\item Define the essential cloud computing concepts relevant to the topic.
-\item Explain the selected Azure service and its role.
-\item Describe the expected benefits of using the cloud.
-\item Identify prerequisites and access requirements.
-\end{itemize}
+	\begin{itemize}
+		\item \textbf{IaaS (Infrastructure as a service)} - You rent compute, manage the OS, runtime, and applications.
+		\item \textbf{PaaS (Platform as a service)} - You rent service, don't manage underlying OS
+		\item \textbf{Where VMs fit} - Azure VMs are one of several on-demand, scalable compute resource types in Azure
+		\item \textbf{Prerequisites} - An Azure subscription, a resource group, a region, permission to create resources.
+		\item \textbf{Billing boundary} - The subscription defines billing and access; the resource group collects related resources.
+	\end{itemize}
 \end{frame}
 \section{Azure exploration}
 \begin{frame}{Selected service: overview}
 \begin{itemize}
-\item Explain the purpose and main capabilities of the selected Azure service.
-\item Show where to find the service in the Azure portal.
-\item Describe the most important configuration choices.
-\item Identify costs, limits, or security considerations.
+\item \textbf{Purpose of Azure VMs} - On-demand, scalable compute with virtualization, without purchasing physical hardware.
+\item \textbf{Common use cases} - Development and testing, cloud applications with variable demand, and extending an on-premises network into Azure.
+\item \textbf{Key configuration choices}
+ \begin{itemize}
+ 	\item Subscription
+ 	\item Region and resource group
+ 	\item VM name
+ 	\item VM image
+ 	\item VM architecture
+ 	\item VM size/family
+ 	\item Authentication
+ 	\item Inbound port rules
+ \end{itemize}
+ \item \textbf{Where to find it} Azure portal → Create a resource → search Virtual machine.
 \end{itemize}
+\end{frame}
+\begin{frame}{Azure VM families}
+	\textbf{The first cost/performance decision}
+	
+	\vspace{0.2cm}
+	Azure groups VM sizes into \textbf{families} by CPU-to-memory ratio and
+	specialised hardware. The wrong family causes overspending
+	or underperformance
+	
+	\vspace{0.3cm}
+	\textbf{The name encodes the specification}
+	
+	\vspace{0.1cm}
+	{\footnotesize
+		\begin{center}
+			\begin{tabular}{@{}ll@{}}
+				\toprule
+				\textbf{Part} & \textbf{Meaning (example)} \\
+				\midrule
+				\textbf{D}  & Family: General purpose \\
+				\textbf{C}  & Subfamiily \\
+				\textbf{a}  & CPU info \\
+				\textbf{d}  & Storage \\
+				\textbf{s}  & Premium storage \\
+				\textbf{v5} & 5th hardware generation \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	}
+\end{frame}
+\begin{frame}[shrink=10]{Core VM families}
+	\centering
+	\renewcommand{\arraystretch}{1.4}
+	\setlength{\tabcolsep}{4pt}
+	\small
+	
+	\begin{tabular}{@{} L{1.6cm} L{2.2cm} L{2.6cm} L{3.8cm} L{3.2cm} @{}}
+		\toprule
+		\textbf{Family} & \textbf{Focus} & \textbf{Approx.\ profile} & \textbf{Best for} & \textbf{Cost note} \\
+		\midrule
+		\textbf{B-series} & Burstable
+		& Baseline + CPU credits
+		& Dev/test, low-traffic servers, occasional spikes
+		& Lowest for idle-heavy use; throttled when credits end \\
+		\addlinespace
+		\textbf{D-series} & General purpose
+		& Balanced ($\sim$4\,GB/vCPU)
+		& Web/app servers, microservices
+		& Default baseline; steady performance \\
+		\addlinespace
+		\textbf{E-series} & Memory optimised
+		& High RAM ($\sim$8\,GB/vCPU)
+		& In-memory DBs, caches, analytics
+		& Higher cost/vCPU; pay for RAM \\
+		\addlinespace
+		\textbf{F-series} & Compute optimised
+		& High CPU ($\sim$2\,GB/vCPU)
+		& Batch, CI/CD, CPU-bound tiers
+		& Cheaper than D for pure compute \\
+		\addlinespace
+		\textbf{L-series} & Storage optimised
+		& High IOPS, local NVMe
+		& Big Data, NoSQL, warehousing
+		& Maximises disk, not CPU/RAM \\
+		\addlinespace
+		\textbf{N-series} & GPU accelerated
+		& Specialised GPU
+		& AI training/inference, rendering
+		& Highest tier; GPU choice critical \\
+		\bottomrule
+	\end{tabular}
+\end{frame}
+\begin{frame}[shrink=15]{B-series in focus: the credit model and a decision path}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\vspace{0.2cm}
+			\textbf{\large How burstable billing works}
+			
+			\vspace{0.3cm}
+			\begin{itemize}
+				\setlength{\itemsep}{0.8em}
+				\item B-series uses \textbf{CPU credits} for performance.
+				\item Below baseline $\rightarrow$ \textbf{accumulate} credits.
+				\item Need more power $\rightarrow$ \textbf{burst} up to 100\% vCPU.
+				\item Credits exhausted $\rightarrow$ \textbf{throttled} to baseline until they recover.
+			\end{itemize}
+			
+			\vspace{0.4cm}
+			\begin{exampleblock}{When to avoid B-series}
+				Sustained high CPU (e.g.\ 80\ for hours) exhausts credits and throttles. Use \textbf{D} or \textbf{F} for steady load.
+			\end{exampleblock}
+		\end{column}
+		
+		\begin{column}{0.48\textwidth}
+			\vspace{0.2cm}
+			\textbf{\large A simple decision path}
+			
+			\vspace{0.3cm}
+			\begin{itemize}
+				\setlength{\itemsep}{0.8em}
+				\item \textbf{Spiky/idle CPU?} \\
+				$\hookrightarrow$ Choose \textbf{B-series} (dev/test)
+				
+				\item \textbf{Steady general workload?} \\
+				$\hookrightarrow$ Choose \textbf{D-series} (web/app)
+				
+				\item \textbf{Needs massive RAM?} \\
+				$\hookrightarrow$ Choose \textbf{E-series} (in-memory DB)
+				
+				\item \textbf{CPU-heavy, low RAM?} \\
+				$\hookrightarrow$ Choose \textbf{F-series} (batch, CI)
+				
+				\item \textbf{Needs high disk IOPS?} \\
+				$\hookrightarrow$ Choose \textbf{L-series} (Big Data)
+				
+				\item \textbf{Needs GPU?} \\
+				$\hookrightarrow$ Choose \textbf{N-series} (AI)
+			\end{itemize}
+		\end{column}
+		
+	\end{columns}
 \end{frame}
 \begin{frame}{Practical demonstration}
 \begin{itemize}
@@ -115,6 +251,10 @@
 \begin{thebibliography}{9}
 \bibitem{azure} Microsoft Learn, \emph{Microsoft Azure documentation}, \url{https://learn.microsoft.com/en-us/azure/}.
 \bibitem{ai} Microsoft Learn, \emph{Azure AI services documentation}, \url{https://learn.microsoft.com/en-us/azure/ai-services/}.
+\bibitem{paas} Microsoft \url{https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-paas}
+\bibitem{iaas} Microsoft \url{https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-iaas/}
+\bibitem{vmsize} Microsoft \url{https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/overview}
+\bibitem{bcpu} \url{https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/b-series-cpu-credit-model}
 \bibitem{other} Add the sources actually used in the presentation and project.
 \end{thebibliography}
 \end{frame}
