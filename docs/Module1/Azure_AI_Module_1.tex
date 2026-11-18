@@ -279,14 +279,101 @@
 \end{itemize}
 \end{frame}
 \section{Results}
-\begin{frame}{Findings and lessons learned}
+\begin{frame}{Key findings}
 \begin{itemize}
-\item Summarize the key findings from exploring Microsoft Azure.
-\item Discuss the service capabilities relevant to the selected topic.
-\item Explain practical advantages and limitations.
-\item Relate the findings to a realistic use case.
+    \item \textbf{Flexibility and control}
+    \begin{itemize}
+        \item Azure VMs provide full control over the operating system,
+        installed software and runtime environment.
+        \item They support different operating systems, architectures
+        and workload requirements.
+    \end{itemize}
+
+    \item \textbf{Scalability and availability}
+    \begin{itemize}
+        \item VM sizes can be selected according to CPU, memory and
+        storage requirements.
+        \item Resources can be scaled up or down as workload demands change.
+    \end{itemize}
+
+    \item \textbf{Cost optimisation}
+    \begin{itemize}
+        \item Different VM families allow optimisation for specific workloads.
+        \item B-series VMs can reduce costs for workloads with variable CPU usage.
+        \item Auto-shutdown helps avoid unnecessary compute costs.
+    \end{itemize}
+
+    \item \textbf{Cloud integration}
+    \begin{itemize}
+        \item VMs can be integrated with other Azure services,
+        networks and storage solutions.
+    \end{itemize}
 \end{itemize}
 \end{frame}
+
+\begin{frame}{Practical advantages and limitations}
+\begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+        \textbf{\large Advantages}
+        \begin{itemize}
+            \item No need to purchase or maintain physical hardware.
+            \item Full control over the operating system.
+            \item Support for custom software and configurations.
+            \item Flexible resource selection.
+            \item Integration with the Azure ecosystem.
+            \item Ability to automate deployment and management.
+        \end{itemize}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+        \textbf{\large Limitations}
+        \begin{itemize}
+            \item Operating system updates and security remain the user's responsibility.
+            \item Costs can increase if resources are not managed properly.
+            \item Incorrect VM sizing can cause poor performance or overspending.
+            \item Network and access configuration require attention.
+            \item B-series performance depends on available CPU credits.
+        \end{itemize}
+    \end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Lessons learned}
+\begin{itemize}
+    \item \textbf{Choosing the right VM size matters}
+    \begin{itemize}
+        \item VM selection should be based on actual workload requirements,
+        not simply the highest available specifications.
+    \end{itemize}
+
+    \item \textbf{Security must be considered from the beginning}
+    \begin{itemize}
+        \item Only necessary inbound ports should be exposed.
+        \item Strong authentication and regular security updates are essential.
+    \end{itemize}
+
+    \item \textbf{Cost management is important}
+    \begin{itemize}
+        \item Auto-shutdown can prevent unnecessary spending.
+        \item VM deallocation should be considered when resources are no longer needed.
+    \end{itemize}
+
+    \item \textbf{IaaS requires more administration}
+    \begin{itemize}
+        \item Azure manages the underlying infrastructure,
+        but users remain responsible for the guest operating system.
+    \end{itemize}
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{block}{Main takeaway}
+Azure Virtual Machines offer flexibility and control,
+but efficient usage requires proper sizing, security
+configuration and continuous cost management.
+\end{block}
+\end{frame}
+
 \section{Conclusions and sources}
 \begin{frame}{Conclusions}
 \begin{enumerate}
