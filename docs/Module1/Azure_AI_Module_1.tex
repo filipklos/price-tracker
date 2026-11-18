@@ -214,18 +214,68 @@
 \end{frame}
 \begin{frame}{Practical demonstration}
 \begin{itemize}
-\item Show the environment and preparation steps.
-\item Describe the operations performed in the Azure portal.
-\item Present evidence of the completed exploration.
-\item Explain any difficulties and their resolution.
+\item To create a new Azure Virtual Machine, enter \textit{virtual machines} in search bar.
+\item Under \textbf{Services}, select \textbf{Virtual Machines}.
+\item In the \textbf{Virtual machines} page, select \textbf{Create} from the menu at the top of the page and then select \textbf{Virtual machine} from the drop-down. The \textbf{Create a virtual machine} page opens.
+\item Under \textbf{Instance details}, enter \textit{myVM} for the Virtual machine name and choose \textit{Windows Server 2022 Datacenter: Azure Edition - x64 Gen 2} for the Image. The page will fill in the other fields with defaults and use the VM name to create similar names for the other resources that are needed.
 \end{itemize}
+\end{frame}
+\begin{frame}{Practical demonstration}
+	\includegraphics[width=\textwidth]{img/1.png}
+\end{frame}
+\begin{frame}{Practical demonstration}
+\begin{itemize}
+	\item Under \textbf{Administrator account}, provide a username, such as \textit{azureuser} and a password. The password must be at least 12 characters long and meet the defined complexity requirements.
+\end{itemize}
+	\includegraphics[width=\textwidth]{img/2.png}
+\end{frame}
+\begin{frame}{Practical demonstration}
+	\begin{itemize}
+		\item Under \textbf{Inbound port rules}, choose \textbf{Allow selected ports} and then select \textbf{RDP (3389)} and \textbf{HTTP (80)} from the drop-down.
+	\end{itemize}
+	\includegraphics[width=\textwidth]{img/3.png}
+\end{frame}
+\begin{frame}{Practical demonstration}
+	\begin{itemize}
+		\item At the top of the page, select the \textbf{Management} tab.
+		\item In the \textbf{Auto-shutdown} section, select the \textbf{Enable auto-shutdown} option.
+		\item Select a \textbf{Shutdown time} and the \textbf{Time zone} to use (UTC is the default). Optionally you can choose to be notified by e-mail before the shutdown.
+	\end{itemize}
+\end{frame}
+\begin{frame}{Practical demonstration}
+	\begin{itemize}
+		\item Leave the remaining defaults and then select the \textbf{Review + create} button at the bottom of the page.
+	\end{itemize}
+	\includegraphics[width=\textwidth]{img/4.png}
+\end{frame}
+\begin{frame}{Practical demonstration}
+	\begin{itemize}
+		\item After validation runs, select the \textbf{Create} button at the bottom of the page.
+	\end{itemize}
+	\includegraphics[width=\textwidth]{img/5.png}
+\end{frame}
+\begin{frame}{Practical demonstration}
+	\begin{itemize}
+		\item After deployment is complete, select \textbf{Go to resource}.
+	\end{itemize}
+	\includegraphics[width=\textwidth]{img/6.png}
+\end{frame}
+\begin{frame}{Practical demonstration}
+	Connect to virtual machine
+	\begin{itemize}
+		\item On the overview page for your virtual machine, select \textbf{Connect} and then select \textbf{Connect} again from the drop-down.
+		\item In the \textbf{Native RDP} page, select the \textbf{Check access} button to make sure port 3389 is available.
+		\item Select \textbf{Download RDP file} to download the connection file to your computer.
+		\item Open the downloaded RDP file and click \textbf{Connect} when prompted.
+		\item You may receive a certificate warning during the sign-in process. Click \textbf{Yes} or \textbf{Continue} to create the connection.
+	\end{itemize}
 \end{frame}
 \begin{frame}{Screenshots and observations}
 \begin{itemize}
-\item Insert a screenshot or a simple diagram illustrating the selected service.
-\item Describe what the screenshot demonstrates.
-\item Identify one meaningful observation from the exploration.
-\item Explain what could be tested or explored next.
+	\item Insert a screenshot or a simple diagram illustrating the selected service.
+	\item Describe what the screenshot demonstrates.
+	\item Identify one meaningful observation from the exploration.
+	\item Explain what could be tested or explored next.
 \end{itemize}
 \end{frame}
 \section{Results}
