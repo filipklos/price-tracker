@@ -179,7 +179,7 @@
 			
 			\vspace{0.4cm}
 			\begin{exampleblock}{When to avoid B-series}
-				Sustained high CPU (e.g.\ 80\ for hours) exhausts credits and throttles. Use \textbf{D} or \textbf{F} for steady load.
+				Sustained high CPU (e.g.\ 80\% for hours) exhausts credits and throttles. Use \textbf{D} or \textbf{F} for steady load.
 			\end{exampleblock}
 		\end{column}
 		
@@ -270,13 +270,101 @@
 		\item You may receive a certificate warning during the sign-in process. Click \textbf{Yes} or \textbf{Continue} to create the connection.
 	\end{itemize}
 \end{frame}
-\begin{frame}{Screenshots and observations}
-\begin{itemize}
-	\item Insert a screenshot or a simple diagram illustrating the selected service.
-	\item Describe what the screenshot demonstrates.
-	\item Identify one meaningful observation from the exploration.
-	\item Explain what could be tested or explored next.
-\end{itemize}
+\begin{frame}[shrink=5]{Screenshots and observations}
+	\begin{columns}[T]
+		\begin{column}{0.52\textwidth}
+			\textbf{\large What the deployment produced}
+			\begin{itemize}
+				\item \textbf{One form, six resources.} With the name \textit{myVM} the portal also created a NIC, public IP, network security group, virtual network and OS disk -- a VM is never an isolated object.
+				\item \textbf{About one minute to a running server}, including validation. The same on physical hardware means ordering, racking, cabling and an OS installation.
+				\item \textbf{The size chose itself:} \texttt{Standard\_B2s} (2 vCPU, 4\,GB). Burstable is right for a lab and wrong for a 24/7 database.
+			\end{itemize}
+		\end{column}
+		
+		\begin{column}{0.45\textwidth}
+			\textbf{\large What we took away}
+			\begin{itemize}
+				\item \textbf{Only two ports were exposed} (RDP 3389, HTTP 80). RDP open to the Internet is acceptable for a lab, not for production -- Azure Bastion or just-in-time access should replace it.
+				\item \textbf{Auto-shutdown at 19:00 UTC} with an e-mail warning deallocates the VM overnight and stops compute billing.
+				\item \textbf{Billing follows the VM state, not the workload:} a machine stopped inside Windows still bills; only \textit{Stop (deallocate)} ends compute charges.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	
+	\vspace{0.25cm}
+	\begin{block}{Observation used later in this deck}
+		The VM was cheap only because it was small \emph{and} switched off for most of the day. That single fact -- control over uptime -- decides most of the Azure-versus-own-hardware comparison.
+	\end{block}
+\end{frame}
+\section{Azure or own hardware?}
+\begin{frame}[shrink=5]{When buying capacity beats owning hardware}
+	\centering
+	\setlength{\fboxsep}{5pt}
+	\setlength{\fboxrule}{0.6pt}
+	
+	\colorbox{CyberBurgundy}{\color{white}\small\textbf{One workload \quad$\rightarrow$\quad three questions}}
+	
+	\vspace{0.3cm}
+	
+	\begin{tabular}{@{}c@{\hspace{0.15cm}}c@{\hspace{0.15cm}}c@{}}
+		\textcolor{CyberRed}{\Large$\downarrow$} &
+		\textcolor{CyberRed}{\Large$\downarrow$} &
+		\textcolor{CyberRed}{\Large$\downarrow$} \\[0.15cm]
+		\fcolorbox{CyberBurgundy}{CyberLight}{\begin{minipage}[t]{3.4cm}
+			\centering\footnotesize
+			\textcolor{CyberBurgundy}{\textbf{Is the load variable\\ or unknown?}}\\[3pt]
+			Proof of concept, season peaks, short projects, demand that may disappear
+			\\[5pt]\textcolor{CyberRed}{\textbf{$\rightarrow$ rent a VM}}
+		\end{minipage}} &
+		\fcolorbox{CyberBurgundy}{CyberLight}{\begin{minipage}[t]{3.4cm}
+			\centering\footnotesize
+			\textcolor{CyberBurgundy}{\textbf{Is it steady, high and\\ predictable for years?}}\\[3pt]
+			Same machine, 24/7, utilisation above roughly half of its capacity
+			\\[5pt]\textcolor{CyberRed}{\textbf{$\rightarrow$ own the hardware}}
+		\end{minipage}} &
+		\fcolorbox{CyberBurgundy}{CyberLight}{\begin{minipage}[t]{3.4cm}
+			\centering\footnotesize
+			\textcolor{CyberBurgundy}{\textbf{Must the data or latency\\ stay on site?}}\\[3pt]
+			Classified data, air-gapped network, sub-millisecond links to plant systems
+			\\[5pt]\textcolor{CyberRed}{\textbf{$\rightarrow$ own or dedicated}}
+		\end{minipage}}
+	\end{tabular}
+	
+	\vspace{0.35cm}
+	\begin{block}{Rule of thumb}
+		Rent by default; own only what is measured, steady and long-lived. In this project the workload was neither, so a pay-as-you-go VM with auto-shutdown was the correct answer.
+	\end{block}
+\end{frame}
+\begin{frame}[shrink=15]{Total cost of ownership, not sticker price}
+	\centering
+	\renewcommand{\arraystretch}{1.2}
+	\setlength{\tabcolsep}{4pt}
+	\footnotesize
+	
+	\begin{tabular}{@{} L{4.9cm} L{2.9cm} L{3.2cm} @{}}
+		\toprule
+		\textbf{Cost element (per month, EUR)} & \textbf{Own server} & \textbf{Azure VM, pay-as-you-go} \\
+		\midrule
+		Upfront purchase & 2\,500--3\,500 (once) & 0 \\
+		Hardware amortisation, 4 years & 50--70 & in compute price \\
+		Compute: 2 vCPU, 4--8\,GB & -- & 30--70 \\
+		Power, cooling, network, IP & 75--115 & in compute price \\
+		Backup, spare parts, UPS & 15--30 & 5--20 (storage) \\
+		Administration, 2--4\,h/month & 80--240 & 20--50 \\
+		\midrule
+		\textbf{Indicative monthly total} & \textbf{220--470} & \textbf{75--180} \\
+		\textbf{Indicative 3-year total} & \textbf{8\,000--17\,000} & \textbf{2\,700--6\,500} \\
+		\bottomrule
+	\end{tabular}
+	
+	\vspace{0.15cm}
+	{\scriptsize West Europe, Linux/Windows mix, VAT excluded (Windows adds 15--30 on Azure); re-check with the Azure Pricing Calculator.}
+	
+	\vspace{0.15cm}
+	\begin{block}{Verdict}
+		{\footnotesize
+		At this size Azure wins on money and on risk: no capex, no admin hours, and auto-shutdown removes the idle cost an owned server pays anyway. Reservations (30--40\% off for one year, up to 60\% for three), spot capacity and Hybrid Benefit close most of the remaining gap. \textbf{Owning wins only for large, steady load} -- 8--16 vCPU or more, 24/7, for three years or longer -- with the room, power and staff already in place.}
+	\end{block}
 \end{frame}
 \section{Results}
 \begin{frame}{Key findings}
@@ -383,15 +471,18 @@ configuration and continuous cost management.
 \item Recommend feasible next steps.
 \end{enumerate}
 \end{frame}
-\begin{frame}{References and resources}
+\begin{frame}[shrink=10]{References and resources}
 \small
-\begin{thebibliography}{9}
+\begin{thebibliography}{10}
 \bibitem{azure} Microsoft Learn, \emph{Microsoft Azure documentation}, \url{https://learn.microsoft.com/en-us/azure/}.
 \bibitem{ai} Microsoft Learn, \emph{Azure AI services documentation}, \url{https://learn.microsoft.com/en-us/azure/ai-services/}.
 \bibitem{paas} Microsoft \url{https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-paas}
 \bibitem{iaas} Microsoft \url{https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-iaas/}
 \bibitem{vmsize} Microsoft \url{https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/overview}
 \bibitem{bcpu} \url{https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/b-series-cpu-credit-model}
+\bibitem{pricing} Azure pricing page and calculator, \url{https://azure.microsoft.com/en-us/pricing/calculator/}
+\bibitem{reserved} Microsoft Learn, \emph{Azure Reservations and savings plans}, \url{https://learn.microsoft.com/en-us/azure/cost-management-billing/reservations/}
+\bibitem{hybrid} Microsoft Learn, \emph{Azure Hybrid Benefit}, \url{https://learn.microsoft.com/en-us/azure/azure-hybrid-benefit/}
 \bibitem{other} Add the sources actually used in the presentation and project.
 \end{thebibliography}
 \end{frame}
